@@ -18,7 +18,10 @@ Instead, we give EXECUTE privilege to custom procedures which do what the GRANT/
 Limited testing was done on MySQL and MariaDB. In principle any MySQL compatible database server version 5.0 and later should work. Please let us know if you have any issues with your database.
 
 #### Setup
-Use the install-mysqlgt-5.0.sql for MySQL version >=5.0 and <5.5 and install-mysqlgt-5.5.sql for MySQL version >=5.5. The script must be run as root.
+  * For MySQL versions 5.5+ Use the install-mysqlgt-5.5.sql (recommended)
+  * For MySQL versions 5.0+ Use the install-mysqlgt-5.0.sql 
+
+The script must be run as root.
 
 After you run it, a new schema mysqlgt is created with tables mysqlgt.db_grant and mysqlgt.log and new procedures mysqlgt.gtSIMPLIFY_DATA, mysqlgt.gtGRANT and mysqlgt.gtREVOKE are created.
 
