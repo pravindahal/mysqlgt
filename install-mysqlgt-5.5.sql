@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `mysqlgt`.`db_grant` (
     PRIMARY KEY (`Host`,`Db`,`User`),
     KEY `User` (`User`)
 ) 
-ENGINE=MyISAM 
+ENGINE=InnoDB 
 DEFAULT CHARSET=utf8 
 COLLATE=utf8_bin;
 
