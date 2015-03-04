@@ -153,7 +153,11 @@ BEGIN
         END IF;
         INSERT INTO `mysqlgt`.`log` VALUES(NULL,CURRENT_TIMESTAMP(),CONCAT(@invoker_user,'@',@invoker_host),new_db_dot_table_dot_column,CONCAT('user granted ', new_table_priv_processed, ' to ', @new_user, '@', @new_host, ' on  ', new_db_dot_table_dot_column));
     ELSE
-        SET error_message = CONCAT(@invoker_user,'@',@invoker_host,' is not allowed to grant ', new_table_priv_processed, ', only allowed to grant ', @allowed_operations);
+        IF @allowed_operations = '' THEN
+            SET error_message = CONCAT(@invoker_user,'@',@invoker_host,' is not allowed to grant ', new_table_priv_processed, ' (not allowed to grant anything for database ', @new_db, ')', @allowed_operations);
+        ELSE
+            SET error_message = CONCAT(@invoker_user,'@',@invoker_host,' is not allowed to grant ', new_table_priv_processed, ' (only allowed to grant ', @allowed_operations, ' for database ', @new_db, ')');
+        END IF;
         INSERT INTO `mysqlgt`.`log` VALUES(NULL,CURRENT_TIMESTAMP(),CONCAT(@invoker_user,'@',@invoker_host),new_db_dot_table_dot_column,error_message);
         SET error_message_128 = CONCAT(SUBSTRING(error_message,1,128-3), '...');
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message_128;
@@ -263,7 +267,11 @@ BEGIN
         
         INSERT INTO `mysqlgt`.`log` VALUES(NULL,CURRENT_TIMESTAMP(),CONCAT(@invoker_user,'@',@invoker_host),new_db_dot_table_dot_column,CONCAT('user revoked ', @unset_priv_processed, ' from ', @new_user, '@', @new_host, ' on ', new_db_dot_table_dot_column));
     ELSE
-        SET error_message = CONCAT(@invoker_user, '@', @invoker_host, ' is not allowed to revoke ', revoked_priv, ', only allowed to revoke ', @allowed_operations);
+        IF @allowed_operations = '' THEN
+            SET error_message = CONCAT(@invoker_user,'@',@invoker_host,' is not allowed to revoke ', new_table_priv_processed, ' (not allowed to revoke anything for database ', @new_db, ')', @allowed_operations);
+        ELSE
+            SET error_message = CONCAT(@invoker_user,'@',@invoker_host,' is not allowed to revoke ', new_table_priv_processed, ' (only allowed to revoke ', @allowed_operations, ' for database ', @new_db, ')');
+        END IF;
         INSERT INTO `mysqlgt`.`log` VALUES(NULL,CURRENT_TIMESTAMP(),CONCAT(@invoker_user,'@',@invoker_host),new_db_dot_table_dot_column,error_message);
         SET error_message_128 = CONCAT(SUBSTRING(error_message,1,128-3), '...');
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message_128;
